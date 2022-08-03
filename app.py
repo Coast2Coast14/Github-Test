@@ -94,13 +94,3 @@ ax.fill_between(prediction_series.index,
                 cf[1],color='grey',alpha=.3)
 plt.show()
 '''
-
-# testing
-'''
-table = get_page('https://www.basketball-reference.com/players/i/irvinky01.html').find("table", { "id" : "per_game" })
-table_rows = table.find_all('tr')
-
-for tr in table_rows:
-    td = tr.find_all('th') + tr.find_all('td')
-    row = [i.text for i in td]
-    print(row)'''

@@ -2,38 +2,32 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+from app import *
 
-# Sets the URL I'm retrieving the data from
-URL = 'https://www.basketball-reference.com/players/i/irvinky01.html'
+test = get_page('https://www.basketball-reference.com/players/r/russebi01.html')
 
-# Imports the URL
-response = requests.get(URL)
-soup = BeautifulSoup(response.content, 'lxml')
-
-# Creates an empty dataframe
-columns = ['Age', 'Tm', 'Lg', 'Pos', 'G', 'GS', 'MP', 'FG', 'FGA',
-           'FG%', '3P', '3PA', '3P%', '2P', '2PA', '2P%', 'eFG%', 'FT',
-           'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK',
-           'TOV', 'PF', 'PTS']
-df = pd.DataFrame(columns=columns)
-
-table = soup.find('table', attrs={'id': 'per_game'}).tbody
-trs = table.find_all('tr')
-print(table)
-# imports data into dataframe
-for tr in trs:
-    tds = tr.find_all('td')
-    row = [td.text.replace('\n', '') for td in tds]
-    df = df.append(pd.Series(row, index=columns), ignore_index=True)
-
-# plots the data
-plt.plot(df[['Age']], df[['PTS']], xlabel='Age', ylabel='Points per Game')
+x = np.arange(19, 30)
+fig, ax = plt.subplots()
+colors = {'CLE': 'maroon', 'BOS': 'tab:green', 'BRK': 'k'}
+plt.bar(df['Age'], df['PTS'], color=df['Tm'].map(colors))
 plt.title('Kyrie Irving Points per Game by Age')
+plt.xlabel('Age')
+plt.xticks(x)
+plt.ylabel('Points per Game')
+plt.ylim([18, 28])
+ax.yaxis.set_minor_locator(tck.AutoMinorLocator())
 plt.show()
 
+df2 = df[['Age', 'PTS']].copy()
 
-def main():
-    pass
+test_size = 9
+
+train, test = df2.iloc[:test_size], df2.iloc[test_size:]
+
+fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+ax.plot(train['Age'], train['PTS'])
+ax.plot(test['Age'], test['PTS'])
+plt.show()
 
 
 if __name__ == "__main__":
